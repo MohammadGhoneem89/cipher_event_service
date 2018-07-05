@@ -1,0 +1,10 @@
+{
+  "keyVault": {
+    "env": "development",
+    "header":{
+      "username": "vaultKeeper",
+      "password": "DSGkeeper@321"
+    },
+    "url": "http://localhost:9019/keyVault"
+  }
+}

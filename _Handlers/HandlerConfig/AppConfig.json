@@ -1,0 +1,12 @@
+{
+   "refunds" : {
+      "checker_group" : "DOF_UAT_Checker",
+      "acquirer_group" : "Acquirer_UAT", 
+      "NotifyInitiate": " Refund is initiated for PayRef {{Original.PayRef}} by user {{lastComment.User}} with comments {{lastComment.Text}} ",
+      "NotifyInsufficient": " {{Original.AcquirerId}} is indicating that account has insufficient funds, raised by user {{lastComment.User}} with comments {{lastComment.Text}} ",
+      "NotifyRejected" : "Refund for  PayRef {{Original.PayRef}} is rejected by user {{lastComment.User}} with comments {{lastComment.Text}}",
+      "NotifyInitiateBatch" : "Refund Batch Created {{Original.RefundBatchNo}} by user {{Original.INITBy}} containing {{Count}} for {{Original.AcquirerId}}",
+      "NotifyProcessedBatch" : "Refund Batch Processed {{Original.RefundBatchNo}} by user {{Original.INITBy}} containing {{Count}} for {{Original.AcquirerId}}",
+      "NotifyProcessed" : "Refund for  PayRef {{Original.PayRef}} is processed by user {{lastComment.User}} with comments {{lastComment.Text}}"
+    }
+}
