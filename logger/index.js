@@ -1,10 +1,10 @@
 'use strict';
 
-const bunyan = require('../customLogger');
+const bunyan = require('../customLog');
 const RotatingFileStream = require('bunyan-rotating-file-stream');
 
 const Logger = bunyan.createLogger({
-		name: 'CipherEventServiceMQListener',
+		name: 'PrivacyAdaptor',
 		streams: [{
 			type: 'raw',
 			stream: new RotatingFileStream({

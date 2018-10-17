@@ -1,5 +1,4 @@
 'use strict';
-
 const dbConfig = require('./dbConfig');
 
 global.config = {};
@@ -11,16 +10,12 @@ function tryConnection() {
     .then((config) => {
       global.config = config;
       console.log({ fs: 'app.js', func: 'init' }, 'server started');
-      const DAL = require('./DAL/connect');
-      const services = require('./services');
-      DAL.connect(() => {
-        services.commission.createBatchRequests();
-        services.settlement.createBatchRequests();
-      });
+      require('./main.js');
+      return Promise.resolve(config);
     })
     .catch((err) => {
       console.log({ fs: 'app.js', func: 'init', error: err.stack || err }, 'server not started, will retry after one second');
-      setTimeout(function () {
+      setTimeout(function() {
         return tryConnection();
       }, 1000);
     });

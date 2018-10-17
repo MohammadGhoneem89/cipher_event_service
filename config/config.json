@@ -1,10 +1,12 @@
 {
+  "applySecrets" : false,
   "keyVault": {
-    "env": "development",
+    "env": "prod",
     "header":{
       "username": "vaultKeeper",
       "password": "DSGkeeper@321"
     },
-    "url": "http://localhost:9019/keyVault"
+    "url": "http://10.65.10.17:5000/keyVault"
   }
 }
+
