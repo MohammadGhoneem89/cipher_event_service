@@ -8,7 +8,6 @@ function get(callback) {
   const options = {
     method: 'POST',
     url: config.applySecrets ? secret.get("VAULT-URL") : config.keyVault.url,
-    timeout:2000,
     body: {
       env: config.keyVault.env,
       header: config.applySecrets ? {

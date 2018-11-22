@@ -1,8 +1,8 @@
 const fs = require('fs');
 let timer;
 const start = (config) => {
-  const postgress = require('./DAL/connect');
-    postgress.connect(() => {
+    const pg = require('./api/connectors/postgress');
+    pg.connection().then((conn) => {
         clearTimeout(timer);
         startDispatcher();
     });
@@ -12,19 +12,20 @@ function startDispatcher() {
     timer = setTimeout(() => {
         processDispatchQueue();
         startDispatcher();
-    }, config.eventService.QueryInterval);
+    }, global.config.eventService.QueryInterval);
 }
 
 function processDispatchQueue() {
+    const config = global.config.eventService
     const BAL = require('./BAL');
     let error = '';
     BAL.dispatcher.getPendingDispatchRequest().then((data) => {
         data.forEach(element => {
             switch (element.dispatcher.type) {
-                case 'Custom':
+                case 'CUSTOM':
                     if (fs.existsSync(element.dispatcher.filePath)) {
                         try {
-                            const dynoDispatcher = require("./"+element.dispatcher.filePath);
+                            const dynoDispatcher = require("./" + element.dispatcher.filePath);
                             dynoDispatcher[element.dispatcher.dispatchFunction](element.eventdata).then(() => {
                                 error = 'Successfully Dispatched!'
                                 BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
@@ -40,19 +41,26 @@ function processDispatchQueue() {
                         }
                     } else {
                         console.log('dispatcher file defined not found!!!!');
-                        console.log('Location: '+ element.dispatcher.filePath);
+                        console.log('Location: ' + element.dispatcher.filePath);
                         error = 'dispatcher file defined not found!!!!'
                         BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
                     }
-                    
+
                     break;
                 case 'API':
-                    if (element.requestURL) {
-                        let body = {};
-                        if (element.requestBody && typeof element.requestBody === 'object' && Array.isArray(eventData) === false) {
-                            body = element.requestBody
+
+                    if (element.dispatcher.requestURL) {
+                        let prebody = {}
+                        if (element.dispatcher.requestBody !== ""){
+                            prebody=JSON.parse(element.dispatcher.requestBody)
                         }
-                        BAL.fetchData.send(element.requestURL, body).then(() => {
+
+                            let body = {
+                                ...prebody,
+                                eventData: element.eventdata
+                            };
+                        console.log(`API body: ${JSON.stringify(body, null, 2)}`);
+                        BAL.fetchData(element.dispatcher.requestURL, body).then(() => {
                             error = 'Successfully Dispatched!'
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
                         }).catch((exp) => {
@@ -66,7 +74,42 @@ function processDispatchQueue() {
                         error = 'URL not defined for type API!!'
                         BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
                     }
-                    
+
+                    break;
+                case 'EMAIL':
+
+                    let Body = {
+                        header: config.Avanza_ISC,
+                        action: "notificationInsert",
+                        data: {
+                            text: `Request ID ${element.internalid} Dispatched of type EMAIL`,
+                            action: config.DispatchQueueURL,
+                            type: "ERROR",
+                            params: "?params",
+                            labelClass: "label label-sm label-primary",
+                            createdBy: "System",
+                            groupName: element.dispatcher.groupName,
+                            isEmail: true,
+                            templateParams: element.eventdata,
+                            templateId: element.dispatcher.templateId
+                        }
+                    };
+                    console.log(`email block: ${JSON.stringify(Body, null, 2)}`);
+                    BAL.fetchData(config.EmailURL, Body).then((data) => {
+                        if (data.success === true) {
+                            console.log(`email block: ${JSON.stringify(data, null, 2)}`);
+                            error = 'Successfully Dispatched!'
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
+                        } else {
+                            console.log(data.message);
+                            error = data.message
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                        }
+                    }).catch((exp) => {
+                        console.log(exp);
+                        error = exp.message ? exp.message : exp
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                    });
                     break;
                 default:
                     console.log("invalid type of dispatcher!!");

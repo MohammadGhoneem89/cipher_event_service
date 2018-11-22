@@ -5,24 +5,49 @@ const fs = require('fs');
 const threadStart = (config) => {
     const eHub = require('./services').eventHub;
     const BAL = require('./BAL');
-    const postgress = require('./DAL/connect');
-    postgress.connect(() => {
+    const pg = require('./api/connectors/postgress');
+    pg.connection().then((conn) => {
         BAL.fetchData(config.eventService.DataSourceURL, {}).then((data) => {
             data.forEach(element => {
-                let filePath = element.filePath;
-                if (fs.existsSync(filePath)) {
-                    const process = fork(filePath);
-                    if (process) {
-                        process.send(global.config);
-                        process.on(element.sourceFunction, evnt => {
-                            eHub.trigger(evnt);
-                        });
+                console.log(`data: ${JSON.stringify(element, null, 2)}`);
+                if (element.type) {
+                    switch (element.type) {
+                        case 'queue':
+                            console.log("starting consumer");
+                            const process = fork('./datasource/queue.js');
+                            if (process) {
+                                let param = {
+                                    config: config,
+                                    datasourceConfig:element
+                                }
+                                process.send(param);
+                                process.on('message', evnt => {
+                                    eHub.trigger(evnt);
+                                });
+                            }
+                            break;
+                        default:
+                            let filePath = element.filePath;
+                            if (fs.existsSync(filePath)) {
+                                const process = fork(filePath);
+                                if (process) {
+                                    process.send(config);
+                                    process.on(element.sourceFunction, evnt => {
+                                        eHub.trigger(evnt);
+                                    });
+                                }
+                            } else {
+                                console.log("Data source file defined not found!!!!");
+                                console.log("Location: " + filePath);
+                                console.log("Datasource Name: " + element.dataSourceName);
+                            }
+                            break;
                     }
-                } else {
-                    console.log("Data source file defined not found!!!!");
-                    console.log("Location: " + filePath);
-                    console.log("Datasource Name: " + element.dataSourceName);
                 }
+
+                /*
+               
+                */
             });
         })
     });

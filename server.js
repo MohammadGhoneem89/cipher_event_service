@@ -22,7 +22,7 @@ function tryConnection() {
       console.log({ fs: 'app.js', func: 'init', error: err.stack || err }, 'server not started, will retry after one second');
       setTimeout(function () {
         return tryConnection();
-      }, 1000);
+      }, 7000);
     });
 }
 

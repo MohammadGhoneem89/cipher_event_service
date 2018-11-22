@@ -1,12 +1,12 @@
 {
   "applySecrets" : false,
   "keyVault": {
-    "env": "prod",
+    "env": "core",
     "header":{
       "username": "vaultKeeper",
       "password": "DSGkeeper@321"
     },
-    "url": "http://10.65.10.17:5000/keyVault"
+    "url": "http://blockchain.avanza.com:9019/keyVault"
   }
 }
 

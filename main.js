@@ -4,7 +4,6 @@ const logger = require('./logger');
 const crypto = require('./crypto');
 let MQConnStr = crypto.decrypt(config.amqp.url);
 let BAL = require('./BAL')
-const DAL = require('./DAL/connect');
 const services = require('./services');
 const { fork } = require('child_process');
 
@@ -23,7 +22,7 @@ let start = function () {
         dispatch.send(config);
         dispatch.on('message', err => {
           console.log("Dispatch Process Exited !!");
-        });
+       });
   
  
        
