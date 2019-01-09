@@ -60,9 +60,14 @@ function processDispatchQueue() {
                                 eventData: element.eventdata
                             };
                         console.log(`API body: ${JSON.stringify(body, null, 2)}`);
-                        BAL.fetchData(element.dispatcher.requestURL, body).then(() => {
-                            error = 'Successfully Dispatched!'
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
+                        BAL.fetchData(element.dispatcher.requestURL, body).then((data) => {
+                            if(data && data.error===true){
+                                 console.log(JSON.stringify(data));
+                                 BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!");
+                            } else {
+                                error = 'Successfully Dispatched!'
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error);
+                            }
                         }).catch((exp) => {
                             console.log(exp);
                             error = exp.message ? exp.message : exp
