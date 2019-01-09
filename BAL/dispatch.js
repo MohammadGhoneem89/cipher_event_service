@@ -2,7 +2,7 @@ const config = global.config;;
 const DAL = require("../DAL");
 const logger = require('../logger');
 
-const pendingDispatchRequestQry = `select * from eventdispatchqueue where status=0`;
+const pendingDispatchRequestQry = `select * from eventdispatchqueue where status in (0,3)`;
 const insertDispatchRequestQry = `INSERT INTO eventdispatchqueue(sourceevent, eventdata, dispatcher, datasource, status, createdon)
 VALUES ($1::varchar, $2::json, $3::json, $4::json, 0, clock_timestamp())`;
 
