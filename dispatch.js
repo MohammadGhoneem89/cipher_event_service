@@ -28,22 +28,22 @@ function processDispatchQueue() {
                             const dynoDispatcher = require("./" + element.dispatcher.filePath);
                             dynoDispatcher[element.dispatcher.dispatchFunction](element.eventdata).then(() => {
                                 error = 'Successfully Dispatched!'
-                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error,{});
                             }).catch((exp) => {
                                 console.log(exp);
                                 error = exp.message ? exp.message : exp
-                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                             });
                         } catch (err) {
                             console.log(err);
                             error = err.message ? err.message : err
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                         }
                     } else {
                         console.log('dispatcher file defined not found!!!!');
                         console.log('Location: ' + element.dispatcher.filePath);
                         error = 'dispatcher file defined not found!!!!'
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                     }
 
                     break;
@@ -63,21 +63,21 @@ function processDispatchQueue() {
                         BAL.fetchData(element.dispatcher.requestURL, body).then((data) => {
                             if(data && data.error===true){
                                  console.log(JSON.stringify(data));
-                                 BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!");
+                                 BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!",data.response||{});
                             } else {
                                 error = 'Successfully Dispatched!'
-                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error);
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error,data.response||{});
                             }
                         }).catch((exp) => {
                             console.log(exp);
                             error = exp.message ? exp.message : exp
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                         });
 
                     } else {
                         console.log("URL not defined for type API!!");
                         error = 'URL not defined for type API!!'
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                     }
 
                     break;
@@ -104,22 +104,22 @@ function processDispatchQueue() {
                         if (data.success === true) {
                             console.log(`email block: ${JSON.stringify(data, null, 2)}`);
                             error = 'Successfully Dispatched!'
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error);
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error,{});
                         } else {
                             console.log(data.message);
                             error = data.message
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                         }
                     }).catch((exp) => {
                         console.log(exp);
                         error = exp.message ? exp.message : exp
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                     });
                     break;
                 default:
                     console.log("invalid type of dispatcher!!");
                     error = 'invalid type of dispatcher!!'
-                    BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error);
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error,{});
                     break;
             }
         });

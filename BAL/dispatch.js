@@ -6,7 +6,7 @@ const pendingDispatchRequestQry = `select * from eventdispatchqueue where status
 const insertDispatchRequestQry = `INSERT INTO eventdispatchqueue(sourceevent, eventdata, dispatcher, datasource, status, createdon)
 VALUES ($1::varchar, $2::json, $3::json, $4::json, 0, clock_timestamp())`;
 
-const updateDispatchRequestQry = `update eventdispatchqueue set status=$2::int, updatedon=clock_timestamp(), error = $3::text where internalid=$1::bigint`;
+const updateDispatchRequestQry = `update eventdispatchqueue set status=$2::int, updatedon=clock_timestamp(), error = $3::text , response = $4::json where internalid=$1::bigint`;
 
 
 
@@ -20,10 +20,10 @@ function getPendingDispatchRequest() {
   });
 }
 
-function updateDispatchRequest(internalID,status,error) {
+function updateDispatchRequest(internalID, status, error, result) {
 
   let refKey = internalID + "____DISPATCH"
-  return DAL.executrScalar(updateDispatchRequestQry, [internalID,status,error], null, refKey).then(() => {
+  return DAL.executrScalar(updateDispatchRequestQry, [internalID, status, error, result], null, refKey).then(() => {
     console.log('DISPATCH Status Updated!!! ' + refKey);
   });
 
