@@ -30,6 +30,7 @@ emitter.on('processMessage', function (eventData) {
 function createDispatchRequest(eventDataReceived, eventConfig) {
     let requests = [];
     eventConfig.dipatcher.forEach(tupple => {
+        console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ",JSON.stringify(tupple))
         requests.push({
             sourceEvent: eventConfig.eventName,
             eventData: eventDataReceived,

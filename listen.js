@@ -7,6 +7,7 @@ const threadStart = (config) => {
     const BAL = require('./BAL');
     const pg = require('./api/connectors/postgress');
     pg.connection().then((conn) => {
+        console.log(config.eventService.DataSourceURL)
         BAL.fetchData(config.eventService.DataSourceURL, {}).then((data) => {
             data.forEach(element => {
                 console.log(`data: ${JSON.stringify(element, null, 2)}`);
