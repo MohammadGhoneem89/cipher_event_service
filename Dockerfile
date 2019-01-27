@@ -8,10 +8,10 @@ MAINTAINER Avanza Innovations <bilal.mahroof@avanzainnovations.com>
 #RUN yum -y module install nodejs:8/development
 
 
-RUN  useradd -ms /bin/bash 1001
-
+#RUN  useradd -ms /bin/bash 1001
+RUN adduser -S 1001
 #WORKDIR /home/avanza
-RUN bash -c "npm --version"
+# RUN bash -c "npm --version"
 #RUN node -v
 #RUN npm -v
 #RUN bash -c "mkdir -p /home/1001/app/logs"
@@ -19,6 +19,6 @@ RUN bash -c "npm --version"
 WORKDIR /opt/app-root
 COPY package.json .
 COPY . .
-RUN bash -c "npm install"
-
+# RUN bash -c "npm install"
+RUN npm install
 USER 1001
