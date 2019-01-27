@@ -69,7 +69,7 @@ function processDispatchQueue() {
                     };
                     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>RESULT", JSON.stringify(returnVal))
                     BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
-                        if (data && data.errorCode !== 200) {
+                        if (data && (data.errorCode !== 200 || data.errorCode !== "200")) {
                             console.log(JSON.stringify(data));
                             response = {
                                 request: returnVal,
