@@ -60,25 +60,25 @@ function processDispatchQueue() {
 
                     console.log(`API body: ${JSON.stringify(result, null, 2)}`);
 
-                    result = Object.assign({
+                    let returnVal = Object.assign({
                         header: {
                             username: element.dispatcher.endpointName.auth.username,
                             password: element.dispatcher.endpointName.auth.password
-                        },
+                        }
                     }, result);
-
-                    BAL.sendGet.external(element.dispatcher, result).then((data) => {
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>RESULT",JSON.stringify(returnVal))
+                    BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
                         if (data && data.errorCode !== 200) {
                             console.log(JSON.stringify(data));
                             response = {
-                                request: result,
+                                request: returnVal,
                                 response: data,
                             }
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
                         } else {
                             error = 'Successfully Dispatched!'
                             response = {
-                                request: result,
+                                request: returnVal,
                                 response: data,
                             }
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error, response || {});
