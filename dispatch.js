@@ -60,13 +60,14 @@ function processDispatchQueue() {
 
                     console.log(`API body: ${JSON.stringify(result, null, 2)}`);
 
-                    let returnVal = Object.assign({
+                    let returnVal = {
                         header: {
                             username: element.dispatcher.endpointName.auth.username,
                             password: element.dispatcher.endpointName.auth.password
-                        }
-                    }, result);
-                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>RESULT",JSON.stringify(returnVal))
+                        },
+                        body: result
+                    };
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>RESULT", JSON.stringify(returnVal))
                     BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
                         if (data && data.errorCode !== 200) {
                             console.log(JSON.stringify(data));
