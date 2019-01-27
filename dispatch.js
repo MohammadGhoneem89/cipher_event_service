@@ -62,8 +62,8 @@ function processDispatchQueue() {
 
                     result = Object.assign({
                         header: {
-                            username: obj.endpointName.auth.username,
-                            password: obj.endpointName.auth.password
+                            username: element.dispatcher.endpointName.auth.username,
+                            password: element.dispatcher.endpointName.auth.password
                         },
                     }, result);
 
