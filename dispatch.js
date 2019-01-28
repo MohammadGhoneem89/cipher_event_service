@@ -60,28 +60,28 @@ function processDispatchQueue() {
                         result = element.eventdata
 
 
-                    let result = {
+                    let returnVal = {
                         header: {
                             username: element.dispatcher.endpointName.auth.username,
                             password: element.dispatcher.endpointName.auth.password
                         },
                         body: result
                     };
-                    console.log(`API body: ${JSON.stringify(result, null, 2)}`);
-                    BAL.sendGet.external(element.dispatcher, result).then((data) => {
+                    console.log(`API body: ${JSON.stringify(returnVal, null, 2)}`);
+                    BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
                         if (data.errorCode && data.errorCode != "200") {
                             console.log(JSON.stringify(data));
-                            result.header &&_.set(result, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                            returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                             response = {
-                                request: result,
+                                request: returnVal,
                                 response: data,
                             };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
                         } else {
                             error = 'Successfully Dispatched!'
-                            result.header && _.set(result, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                            returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                             response = {
-                                request: result,
+                                request: returnVal,
                                 response: data,
                             };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error, response || {});
@@ -89,9 +89,15 @@ function processDispatchQueue() {
                     }).catch((exp) => {
                         console.log(exp);
                         error = exp.message ? exp.message : exp;
-                        result.header && _.set(result, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                        let expRequest = {
+                            header: {
+                                username: element.dispatcher.endpointName.auth.username,
+                                password: element.dispatcher.endpointName.auth.password
+                            },
+                            body: result
+                        };
                         response = {
-                            request: result,
+                            request: expRequest,
                             response: data,
                             error: exp
                         };
