@@ -96,7 +96,7 @@ function processDispatchQueue() {
                             },
                             body: result
                         };
-                        expRequest.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                        expRequest.header && _.set(expRequest, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                         response = {
                             request: expRequest,
                             response: data,
