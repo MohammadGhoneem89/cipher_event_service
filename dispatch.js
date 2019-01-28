@@ -1,4 +1,5 @@
 const fs = require('fs');
+const _ = require('lodash');
 const transformTemplate = require('./services/helperTransform');
 let timer;
 const start = (config) => {
@@ -73,7 +74,7 @@ function processDispatchQueue() {
                             response = {
                                 request: returnVal,
                                 response: data,
-                            }
+                            };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
                         } else {
                             error = 'Successfully Dispatched!'
@@ -81,22 +82,22 @@ function processDispatchQueue() {
                             response = {
                                 request: returnVal,
                                 response: data,
-                            }
+                            };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error, response || {});
                         }
                     }).catch((exp) => {
                         console.log(exp);
-                        error = exp.message ? exp.message : exp
+                        error = exp.message ? exp.message : exp;
                         response = {
                             request: result,
                             response: data,
                             error: exp
-                        }
+                        };
                         BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, response);
                     });
                     break;
                 case "API In-Direct":
-                    result = element.eventdata
+                    result = element.eventdata;
                     console.log(`API body: ${JSON.stringify(result, null, 2)}`);
                     BAL.sendGet.internal(element.dispatcher, result).then((data) => {
                         if (data && data.error === true) {
