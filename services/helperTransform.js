@@ -11,6 +11,9 @@ Handlebars.registerHelper('EpochToHuman', function (value) {
     value *= 1000;
     return moment(value).format('DD/MM/YYYY');
 });
+Handlebars.registerHelper('getzero', function (value,index) {
+    return value[index] || "";
+});
 Handlebars.registerHelper('test', function (value) {
     return value;
 });
