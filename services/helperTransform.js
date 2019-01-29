@@ -12,8 +12,15 @@ Handlebars.registerHelper('EpochToHuman', function (value) {
     return moment(value).format('DD/MM/YYYY');
 });
 Handlebars.registerHelper('getzero', function (value) {
-console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> HELPER ",JSON.stringify(value))
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> HELPER ", JSON.stringify(value))
     return value[0] || "";
+});
+Handlebars.registerHelper('jsonParse', function (value) {
+    try {
+        return JSON.parse(value);
+    } catch (ex) {
+        return value;
+    }
 });
 Handlebars.registerHelper('test', function (value) {
     return value;
