@@ -21,6 +21,7 @@ let internal = (obj, body) => {
 
 let external = (obj, body) => {
     let url=`${obj.endpointName.address}${obj.requestURL == '/' ? "" : obj.requestURL}`
+  console.log("URL=============>",url);
     let rpOptions = {
         method: 'POST',
         url,
