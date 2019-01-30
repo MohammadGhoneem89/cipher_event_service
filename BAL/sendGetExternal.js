@@ -3,7 +3,7 @@ let Config = global.config.eventService;
 const logger = require('../logger');
 
 let internal = (obj, body) => {
-    let url=Config.ISC_URL;
+    let url= global.config.eventService.ISC_URL;
     let rpOptions = {
         method: 'POST',
         url,
