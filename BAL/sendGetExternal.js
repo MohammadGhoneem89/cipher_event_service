@@ -4,6 +4,7 @@ const logger = require('../logger');
 
 let internal = (obj, body) => {
     let url= global.config.eventService.ISC_URL;
+  console.log("INTERNAL URL=============>",url);
     let rpOptions = {
         method: 'POST',
         url,
