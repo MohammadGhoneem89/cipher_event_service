@@ -112,16 +112,16 @@ function processDispatchQueue() {
                         if (data && data.error === true) {
                             console.log(JSON.stringify(data));
                             response = {
-                                request: result,
+                                request: data.request || result,
                                 response: data.response,
-                            }
+                            };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", response || {});
                         } else {
                             error = 'Successfully Dispatched!'
                             response = {
-                                request: result,
-                                response: data.response,
-                            }
+                              request: data.request || result,
+                              response: data.response,
+                            };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error, response || {});
                         }
                     }).catch((exp) => {
