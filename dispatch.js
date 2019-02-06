@@ -114,8 +114,8 @@ function processDispatchQueue() {
                           console.log("========RESPONSE=========>",data,"<=======RESPONSE===========");
                             // console.log(JSON.stringify(data));
                             response = {
-                                request: data.response.request,
-                                response: data.response.response,
+                                request: data.request,
+                                response: data.response,
                             };
                             BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", response || {});
                         } else {
