@@ -4,6 +4,7 @@ const logger = require('../logger');
 
 let internal = (obj, body) => {
     let url= global.config.eventService.ISC_URL;
+  obj.endpointName.address = `${obj.endpointName.address}${obj.requestURL === '/' ? "" : obj.requestURL}`;
   console.log("INTERNAL URL=============>",url, body);
     let rpOptions = {
         method: 'POST',
@@ -22,7 +23,7 @@ let internal = (obj, body) => {
 
 
 let external = (obj, body) => {
-    let url=`${obj.endpointName.address}${obj.requestURL == '/' ? "" : obj.requestURL}`
+    let url=`${obj.endpointName.address}${obj.requestURL === '/' ? "" : obj.requestURL}`;
   console.log("URL=============>",url, body);
     let rpOptions = {
         method: 'POST',
