@@ -107,10 +107,12 @@ function processDispatchQueue() {
                     break;
                 case "API In-Direct":
                     result = element.eventdata;
-                    console.log(`API body: ${JSON.stringify(result, null, 2)}`);
+                    console.log("========element=========>",element,"<=======element===========");
+                    // console.log(`API body: ${JSON.stringify(result, null, 2)}`);
                     BAL.sendGet.internal(element.dispatcher, result).then((data) => {
                         if (data && data.error === true) {
-                            console.log(JSON.stringify(data));
+                          console.log("========RESPONSE=========>",data,"<=======RESPONSE===========");
+                            // console.log(JSON.stringify(data));
                             response = {
                                 request: data.request || result,
                                 response: data.response,
