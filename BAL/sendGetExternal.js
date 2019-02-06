@@ -5,6 +5,7 @@ const logger = require('../logger');
 let internal = (obj, body) => {
     let url= global.config.eventService.ISC_URL;
   obj.endpointName.address = `${obj.endpointName.address}${obj.requestURL === '/' ? "" : obj.requestURL}`;
+  console.log("ADDRESS====================>",obj.endpointName.address);
   console.log("INTERNAL URL=============>",url, body);
     let rpOptions = {
         method: 'POST',
