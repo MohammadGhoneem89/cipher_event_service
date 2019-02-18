@@ -1,0 +1,13 @@
+npm-debug.log
+node_modules
+chaincode
+dist
+signcerts
+vendor
+crypto-config
+keystore
+IntegrationLayer/network-config.json
+*.sh
+*.log.*
+**/*.log.*
+**/*.log
