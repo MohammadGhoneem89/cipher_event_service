@@ -1,9 +1,6 @@
 const config = global.config.eventService;
 const DAL = require("../DAL");
 const logger = require('../logger');
-(0,3)
-
-
 
 const filter = config.filter || `(0,3)`;
 const pendingDispatchRequestQry = `select * from eventdispatchqueue where status in ${filter} and retrycount < 5`;
