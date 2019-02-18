@@ -1,8 +1,12 @@
-const config = global.config;;
+const config = global.config.eventService;
 const DAL = require("../DAL");
 const logger = require('../logger');
+(0,3)
 
-const pendingDispatchRequestQry = `select * from eventdispatchqueue where status in (0,3) and retrycount < 5`;
+
+
+const filter = config.filter || `(0,3)`;
+const pendingDispatchRequestQry = `select * from eventdispatchqueue where status in ${filter} and retrycount < 5`;
 const insertDispatchRequestQry = `INSERT INTO eventdispatchqueue(sourceevent, eventdata, dispatcher, datasource, status, createdon)
 VALUES ($1::varchar, $2::json, $3::json, $4::json, 0, clock_timestamp())`;
 
