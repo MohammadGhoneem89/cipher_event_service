@@ -68,73 +68,80 @@ function processDispatchQueue() {
                         body: result
                     };
                     console.log(`API body: ${JSON.stringify(returnVal, null, 2)}`);
-                    BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
-                        if (data.errorCode && data.errorCode != "200") {
-                            console.log(JSON.stringify(data));
-                            returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                            response = {
-                                request: returnVal,
-                                response: data,
+
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                        console.log(`request maked as waiting successfully for ${element.internalid}`)
+                        BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
+                            if (data.errorCode && data.errorCode != "200") {
+                                console.log(JSON.stringify(data));
+                                returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                                response = {
+                                    request: returnVal,
+                                    response: data,
+                                };
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
+                            } else {
+                                error = 'Successfully Dispatched!'
+                                returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                                response = {
+                                    request: returnVal,
+                                    response: data,
+                                };
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error, response || {});
+                            }
+                        }).catch((exp) => {
+                            console.log(exp);
+                            error = exp.message ? exp.message : exp;
+                            let expRequest = {
+                                header: {
+                                    username: element.dispatcher.endpointName.auth.username,
+                                    password: element.dispatcher.endpointName.auth.password
+                                },
+                                body: result
                             };
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
-                        } else {
-                            error = 'Successfully Dispatched!'
-                            returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                            expRequest.header && _.set(expRequest, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                             response = {
-                                request: returnVal,
+                                request: expRequest,
                                 response: data,
+                                error: exp
                             };
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, error, response || {});
-                        }
-                    }).catch((exp) => {
-                        console.log(exp);
-                        error = exp.message ? exp.message : exp;
-                        let expRequest = {
-                            header: {
-                                username: element.dispatcher.endpointName.auth.username,
-                                password: element.dispatcher.endpointName.auth.password
-                            },
-                            body: result
-                        };
-                        expRequest.header && _.set(expRequest, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                        response = {
-                            request: expRequest,
-                            response: data,
-                            error: exp
-                        };
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, response);
-                    });
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, response);
+                        });
+                    })
                     break;
                 case "API In-Direct":
                     result = element.eventdata;
-                    console.log("========element=========>",element,"<=======element===========");
+                    console.log("========element=========>", element, "<=======element===========");
                     // console.log(`API body: ${JSON.stringify(result, null, 2)}`);
-                    BAL.sendGet.internal(element.dispatcher, result).then((data) => {
-                        if (data && data.error === true) {
-                          console.log("========RESPONSE=========>",data,"<=======RESPONSE===========");
-                            // console.log(JSON.stringify(data));
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                        console.log(`request maked as waiting successfully for ${element.internalid}`)
+                        BAL.sendGet.internal(element.dispatcher, result).then((data) => {
+                            if (data && data.error === true) {
+                                console.log("========RESPONSE=========>", data, "<=======RESPONSE===========");
+                                // console.log(JSON.stringify(data));
+                                response = {
+                                    request: data.request,
+                                    response: data.response,
+                                };
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", response || {});
+                            } else {
+                                error = 'Successfully Dispatched!'
+                                response = {
+                                    request: data.request || result,
+                                    response: data.response,
+                                };
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error, response || {});
+                            }
+                        }).catch((exp) => {
+                            console.log(exp);
+                            error = exp.message ? exp.message : exp
                             response = {
-                                request: data.request,
-                                response: data.response,
-                            };
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", response || {});
-                        } else {
-                            error = 'Successfully Dispatched!'
-                            response = {
-                              request: data.request || result,
-                              response: data.response,
-                            };
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error, response || {});
-                        }
-                    }).catch((exp) => {
-                        console.log(exp);
-                        error = exp.message ? exp.message : exp
-                        response = {
-                            request: result,
-                            response: data,
-                            error: exp
-                        }
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, response);
+                                request: result,
+                                response: data,
+                                error: exp
+                            }
+                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, response);
+                        });
                     });
                     break;
                 case "API":
@@ -150,18 +157,22 @@ function processDispatchQueue() {
                             eventData: element.eventdata
                         };
                         console.log(`API body: ${JSON.stringify(body, null, 2)}`);
-                        BAL.fetchData(element.dispatcher.requestURL, body).then((data) => {
-                            if (data && data.error === true) {
-                                console.log(JSON.stringify(data));
-                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", data.response || {});
-                            } else {
-                                error = 'Successfully Dispatched!'
-                                BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error, data.response || {});
-                            }
-                        }).catch((exp) => {
-                            console.log(exp);
-                            error = exp.message ? exp.message : exp
-                            BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, {});
+
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                            console.log(`request maked as waiting successfully for ${element.internalid}`)
+                            BAL.fetchData(element.dispatcher.requestURL, body).then((data) => {
+                                if (data && data.error === true) {
+                                    console.log(JSON.stringify(data));
+                                    BAL.dispatcher.updateDispatchRequest(element.internalid, 3, data.message || "some error occoured, please check logs!", data.response || {});
+                                } else {
+                                    error = 'Successfully Dispatched!'
+                                    BAL.dispatcher.updateDispatchRequest(element.internalid, 1, data.message || error, data.response || {});
+                                }
+                            }).catch((exp) => {
+                                console.log(exp);
+                                error = exp.message ? exp.message : exp
+                                BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, {});
+                            });
                         });
 
                     } else {
