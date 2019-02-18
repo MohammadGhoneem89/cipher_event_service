@@ -22,7 +22,6 @@ function processDispatchQueue() {
     const BAL = require('./BAL');
     let error = '';
     BAL.dispatcher.getPendingDispatchRequest().then((requests) => {
-
         requests.forEach(element => {
             let result = undefined, response = undefined, data = undefined;
             switch (element.dispatcher.type) {
@@ -58,8 +57,6 @@ function processDispatchQueue() {
                         result = transformTemplate(element.eventdata, element.dispatcher.templateName)
                     else
                         result = element.eventdata
-
-
                     let returnVal = {
                         header: {
                             username: element.dispatcher.endpointName.auth.username,
@@ -68,8 +65,7 @@ function processDispatchQueue() {
                         body: result
                     };
                     console.log(`API body: ${JSON.stringify(returnVal, null, 2)}`);
-
-                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", returnVal).then((data) => {
                         console.log(`request maked as waiting successfully for ${element.internalid}`)
                         BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
                             if (data.errorCode && data.errorCode != "200") {
@@ -113,7 +109,7 @@ function processDispatchQueue() {
                     result = element.eventdata;
                     console.log("========element=========>", element, "<=======element===========");
                     // console.log(`API body: ${JSON.stringify(result, null, 2)}`);
-                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", returnVal).then((data) => {
                         console.log(`request maked as waiting successfully for ${element.internalid}`)
                         BAL.sendGet.internal(element.dispatcher, result).then((data) => {
                             if (data && data.error === true) {
@@ -158,7 +154,7 @@ function processDispatchQueue() {
                         };
                         console.log(`API body: ${JSON.stringify(body, null, 2)}`);
 
-                        BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "waiting", returnVal).then((data) => {
+                        BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", returnVal).then((data) => {
                             console.log(`request maked as waiting successfully for ${element.internalid}`)
                             BAL.fetchData(element.dispatcher.requestURL, body).then((data) => {
                                 if (data && data.error === true) {
