@@ -17,7 +17,7 @@ let internal = (obj, body) => {
             eventData: body
         },
         json: true,
-        timeout: 600000 // 10 min.
+        timeout: Config.timeout || 600000 // 10 min.
     };
     logger.info({ fs: 'RequestPromise', func: 'requestPromise' }, "[EPS][RP][SEND]", url, JSON.stringify(rpOptions.body || rpOptions));
     return rp(rpOptions);
@@ -31,7 +31,8 @@ let external = (obj, body) => {
         method: 'POST',
         url,
         body: body,
-        json: true
+        json: true,
+        timeout: Config.timeout || 600000 // 10 min.
     };
     logger.info({ fs: 'RequestPromise', func: 'requestPromise' }, "[EPS][RP][SEND]", url, JSON.stringify(rpOptions.body || rpOptions));
     return rp(rpOptions);

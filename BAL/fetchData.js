@@ -7,7 +7,7 @@ let send = (url, body) => {
         method: 'POST',
         url,
         body: Object.assign({header: Config.Avanza_ISC},body),
-        json: true 
+        json: true
     };
     logger.info({ fs: 'RequestPromise', func: 'requestPromise' }, "[EPS][RP][SEND]", url, JSON.stringify(rpOptions.body || rpOptions));
     return rp(rpOptions);
