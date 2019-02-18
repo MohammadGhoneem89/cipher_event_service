@@ -16,7 +16,8 @@ let internal = (obj, body) => {
             endpoint: obj.endpointName,
             eventData: body
         },
-        json: true
+        json: true,
+        timeout: 600000 // 10 min.
     };
     logger.info({ fs: 'RequestPromise', func: 'requestPromise' }, "[EPS][RP][SEND]", url, JSON.stringify(rpOptions.body || rpOptions));
     return rp(rpOptions);
