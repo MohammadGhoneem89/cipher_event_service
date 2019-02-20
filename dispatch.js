@@ -109,7 +109,7 @@ function processDispatchQueue() {
                     result = element.eventdata;
                     console.log("========element=========>", element, "<=======element===========");
                     // console.log(`API body: ${JSON.stringify(result, null, 2)}`);
-                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", returnVal).then((data) => {
+                    BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", {}).then((data) => {
                         console.log(`request maked as waiting successfully for ${element.internalid}`)
                         BAL.sendGet.internal(element.dispatcher, result).then((data) => {
                             if (data && data.error === true) {
