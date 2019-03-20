@@ -58,10 +58,6 @@ function processDispatchQueue() {
                     else
                         result = element.eventdata
                     let returnVal = {
-                        header: {
-                            username: element.dispatcher.endpointName.auth.username,
-                            password: element.dispatcher.endpointName.auth.password
-                        },
                         body: result
                     };
                     console.log(`API body: ${JSON.stringify(returnVal, null, 2)}`);
