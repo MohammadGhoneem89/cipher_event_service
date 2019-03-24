@@ -26,18 +26,15 @@ let internal = (obj, body) => {
 
 let external = (obj, body) => {
     let _endpoint = new Endpoint(body);
-  
     return _endpoint.executeEndpoint(obj.endpointName, obj.requestURL).then((resp) => {
-      if (resp) {
-        if (resp.success === false || resp.error === true) {
-          throw new Error(resp.message);
+        if (resp) {
+            if (resp.success === false || resp.error === true) {
+                throw new Error(resp.message);
+            }
+            return resp.data;
         }
-        return resp.data;
-      }
-      return resp;
-    }).catch((ex)=>{
-        console.log(ex)
-    });
+        return resp;
+    })
 };
 module.exports = {
     internal, external
