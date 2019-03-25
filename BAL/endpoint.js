@@ -19,10 +19,10 @@ module.exports = class Endpoint {
     
     switch (endpoint.authType) {
       case "bearer":
-        if (endpoint.auth.endpoint.auth.endpoint) {
-          console.log("Circualr JWT Request Cannot be Processed Please Check Endpoint!!")
-          // return Promise.resolve(generalResponse);
-        };
+        // if (endpoint.auth.endpoint.auth.endpoint) {
+        //   console.log("Circualr JWT Request Cannot be Processed Please Check Endpoint!!")
+        //   // return Promise.resolve(generalResponse);
+        // };
         let tokenfield = _.get(endpoint, 'auth.field', undefined);
         if (!tokenfield) {
           throw new Error("Token field not available Please Check Endpoint!!");
