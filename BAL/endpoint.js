@@ -218,7 +218,7 @@ module.exports = class Endpoint {
     let rpOptions = {
       method: 'POST',
       url: options.serviceURL,
-      form: options.form,
+      formData: options.form,
       headers: options.headers,
       timeout: 10000,
       json: !options.ignoreBody
