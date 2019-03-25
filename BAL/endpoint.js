@@ -16,26 +16,21 @@ module.exports = class Endpoint {
     let postfix = ServiceURI == '/' ? "" : ServiceURI;
     ServiceURL = `${endpoint.address}${postfix}`;
     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", ServiceURL);
+    
     switch (endpoint.authType) {
       case "bearer":
         if (endpoint.auth.endpoint.auth.endpoint) {
-          generalResponse.error = true;
-          generalResponse.message = "Circualr JWT Request Cannot be Processed Please Check Endpoint!!";
-          return Promise.resolve(generalResponse);
+          console.log("Circualr JWT Request Cannot be Processed Please Check Endpoint!!")
+          // return Promise.resolve(generalResponse);
         };
         let tokenfield = _.get(endpoint, 'auth.field', undefined);
         if (!tokenfield) {
-          generalResponse.error = true;
-          generalResponse.message = "Token field not available Please Check Endpoint!!";
-          return Promise.resolve(generalResponse);
+          throw new Error("Token field not available Please Check Endpoint!!");
         };
         return this.executeEndpoint(endpoint.auth.endpoint, "/", 1).then((data) => {
           let tokenValue = _.get(data, `data.${tokenfield}`, undefined);
           if (!tokenValue) {
-            generalResponse.error = true;
-            generalResponse.message = `Not able to fetch field from success authentication response | field : ${tokenfield}`;
-            generalResponse.data = data;
-            return Promise.resolve(generalResponse);
+            throw new Error("Not able to fetch field from success authentication response | field : ${tokenfield}");
           }
           else if (data.error && data.error == true) {
             return Promise.resolve(data);
