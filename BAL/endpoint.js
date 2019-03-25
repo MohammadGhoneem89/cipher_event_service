@@ -168,25 +168,25 @@ module.exports = class Endpoint {
     }
     return header;
   }
-  computeFormBody(endpoint,body) {
+  computeFormBody(endpoint, body) {
 
     // clean body
-    _.set(body,'header.content-type',undefined)
-    _.set(body,'header.cache-control',undefined)
-    _.set(body,'header.postman-token',undefined)
-    _.set(body,'header.user-agent',undefined)
-    _.set(body,'header.accept',undefined)
-    _.set(body,'header.host',undefined)
-    _.set(body,'header.accept-encoding',undefined)
-    _.set(body,'header.content-length',undefined)
-    _.set(body,'header.connection',undefined)
-    _.set(body,'action',undefined)
-    _.set(body,'channel',undefined)
-    _.set(body,'ipAddress',undefined)
-    _.set(body,'query',undefined)
-    _.set(body,'__JWTORG',undefined)
-    _.set(body,'JWToken',undefined)
-    _.set(body,'token',undefined)
+    _.set(body, 'header.content-type', undefined)
+    _.set(body, 'header.cache-control', undefined)
+    _.set(body, 'header.postman-token', undefined)
+    _.set(body, 'header.user-agent', undefined)
+    _.set(body, 'header.accept', undefined)
+    _.set(body, 'header.host', undefined)
+    _.set(body, 'header.accept-encoding', undefined)
+    _.set(body, 'header.content-length', undefined)
+    _.set(body, 'header.connection', undefined)
+    _.set(body, 'action', undefined)
+    _.set(body, 'channel', undefined)
+    _.set(body, 'ipAddress', undefined)
+    _.set(body, 'query', undefined)
+    _.set(body, '__JWTORG', undefined)
+    _.set(body, 'JWToken', undefined)
+    _.set(body, 'token', undefined)
 
 
     let data = {
@@ -207,7 +207,7 @@ module.exports = class Endpoint {
         }
       });
     }
-   
+
     return data;
   }
   callWebService(options) {
@@ -218,13 +218,16 @@ module.exports = class Endpoint {
     let rpOptions = {
       method: 'POST',
       url: options.serviceURL,
-      formData: options.form,
+      form: Object.keys(options.form).length > 0 ? options.form : undefined,
       headers: options.headers,
       timeout: 10000,
       json: !options.ignoreBody
     };
     if (!options.ignoreBody) {
       _.set(rpOptions, 'body', options.body);
+    } else {
+      for (let key in options.form)
+        _.set(rpOptions, 'body', `${key}:${options.form[key]}`);
     }
     console.log("-------------BEGIN External Request--------------");
     console.log(JSON.stringify(rpOptions, null, 2));
