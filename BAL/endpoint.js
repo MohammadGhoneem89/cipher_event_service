@@ -93,19 +93,19 @@ module.exports = class Endpoint {
     });
   }
   executeCredHeaderBody(endpoint, body, url) {
-    let authorizationHeader;
+    // let authorizationHeader;
     if (!endpoint.auth || !endpoint.auth.username || !endpoint.auth.password) {
       throw new Error("Cred Header Authorization Credentials are required!!");
     }
     let header = this.computeHeaders(endpoint);
     let data = this.computeFormBody(endpoint, body);
-    _.set(body, 'username', endpoint.auth.username);
-    _.set(body, 'password', endpoint.auth.password);
-    _.set(header, 'username', endpoint.auth.username);
-    _.set(header, 'password', endpoint.auth.password);
-    authorizationHeader = `Basic ${Base64.encode(`${endpoint.auth.username}:${endpoint.auth.password}`)}`;
+    _.set(body, 'header.username', endpoint.auth.username);
+    _.set(body, 'header.password', endpoint.auth.password);
+    // _.set(header, 'username', endpoint.auth.username);
+    // _.set(header, 'password', endpoint.auth.password);
+    // authorizationHeader = `Basic ${Base64.encode(`${endpoint.auth.username}:${endpoint.auth.password}`)}`;
 
-    _.set(header, 'Authorization', authorizationHeader);
+    // _.set(header, 'Authorization', authorizationHeader);
     return this.callWebService({
       serviceURL: url,
       ...data,
