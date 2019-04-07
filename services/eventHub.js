@@ -11,9 +11,9 @@ emitter.on('processMessage', function (eventData) {
         BAL.fetchData(config.eventService.EventListURL, {}).then((data) => {
             console.log("-----------Event Received GOT MESSAGE--------\n" + JSON.stringify(eventData, null, 2));
             data.forEach(tupple => {
-                if (eventApplyRule(eventData, tupple.rule)) {       
+                if (eventApplyRule(eventData, tupple.rule)) {
                     console.log("Event Name: " + tupple.eventName);
-                    BAL.dispatcher.insertDispatchRequest(createDispatchRequest(eventData,tupple));
+                    BAL.dispatcher.insertDispatchRequest(createDispatchRequest(eventData, tupple));
                     console.log("event ready for dispatch");
                 } else {
                     console.log("ignoring event due to Criterions failure");
@@ -30,7 +30,19 @@ emitter.on('processMessage', function (eventData) {
 function createDispatchRequest(eventDataReceived, eventConfig) {
     let requests = [];
     eventConfig.dipatcher.forEach(tupple => {
-        console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ",JSON.stringify(tupple))
+        console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ", JSON.stringify(tupple))
+
+        for (key in eventDataReceived) {
+            if (eventDataReceived[key].indexOf("{") > -1) {
+                try {
+                    eventDataReceived[key] = JSON.parse(value);
+                } catch (ex) {
+                    console.log(ex)
+                    eventDataReceived[key] = value;
+                }
+            }
+        }
+
         requests.push({
             sourceEvent: eventConfig.eventName,
             eventData: eventDataReceived,
