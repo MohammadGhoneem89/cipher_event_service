@@ -32,7 +32,7 @@ function createDispatchRequest(eventDataReceived, eventConfig) {
     eventConfig.dipatcher.forEach(tupple => {
         console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ", JSON.stringify(tupple))
 
-        for (key in eventDataReceived) {
+        for (let key in eventDataReceived) {
             if (eventDataReceived[key].indexOf("{") > -1) {
                 try {
                     eventDataReceived[key] = JSON.parse(value);
