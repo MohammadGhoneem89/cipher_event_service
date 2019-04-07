@@ -27,6 +27,22 @@ Handlebars.registerHelper('test', function (value) {
 });
 
 function transformTemplate(payload, source) {
+    try {
+        for (key in payload) {
+            if (typeof payload[key] == "string" && payload[key].indexOf("{") > -1) {
+                try {
+                    payload[key] = JSON.parse(value);
+                } catch (ex) {
+                    console.log(ex)
+                    payload[key] = value;
+                }
+            }
+        }
+    } catch (ex) {
+        console.log(ex)
+        console.log("release patched for to stringify object failed!!!, continue exec..");
+
+    }
     let data = {};
     if (source.customFunction !== undefined) {
         source.customFunction.map((item) => {
