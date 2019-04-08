@@ -34,10 +34,10 @@ function createDispatchRequest(eventDataReceived, eventConfig) {
             for (let key in eventDataReceived) {
                 if (typeof eventDataReceived[key] == "string" && eventDataReceived[key].indexOf("{") > -1) {
                     try {
-                        eventDataReceived[key] = JSON.parse(value);
+                        eventDataReceived[key] = JSON.parse(eventDataReceived[key]);
                     } catch (ex) {
                         console.log(ex)
-                        eventDataReceived[key] = value;
+                        eventDataReceived[key] =  eventDataReceived[key];
                     }
                 }
             }
