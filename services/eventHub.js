@@ -30,16 +30,20 @@ emitter.on('processMessage', function (eventData) {
 function createDispatchRequest(eventDataReceived, eventConfig) {
     let requests = [];
     eventConfig.dipatcher.forEach(tupple => {
-        console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ", JSON.stringify(tupple))
-        for (let key in eventDataReceived) {
-            if (typeof eventDataReceived[key] == "string" && eventDataReceived[key].indexOf("{") > -1) {
-                try {
-                    eventDataReceived[key] = JSON.parse(value);
-                } catch (ex) {
-                    console.log(ex)
-                    eventDataReceived[key] = value;
+        try {
+            for (let key in eventDataReceived) {
+                if (typeof eventDataReceived[key] == "string" && eventDataReceived[key].indexOf("{") > -1) {
+                    try {
+                        eventDataReceived[key] = JSON.parse(value);
+                    } catch (ex) {
+                        console.log(ex)
+                        eventDataReceived[key] = value;
+                    }
                 }
             }
+        } catch (ex) {
+            console.log("error occured while parsing...");
+            console.log(ex)
         }
         requests.push({
             sourceEvent: eventConfig.eventName,
