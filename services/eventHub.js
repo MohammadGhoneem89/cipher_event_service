@@ -31,9 +31,8 @@ function createDispatchRequest(eventDataReceived, eventConfig) {
     let requests = [];
     eventConfig.dipatcher.forEach(tupple => {
         console.log(">>>>>>>>>>>>>>>>>dispatch info >>>>>>>>>>> ", JSON.stringify(tupple))
-
         for (let key in eventDataReceived) {
-            if (eventDataReceived[key].indexOf("{") > -1) {
+            if (typeof eventDataReceived[key] == "string" && eventDataReceived[key].indexOf("{") > -1) {
                 try {
                     eventDataReceived[key] = JSON.parse(value);
                 } catch (ex) {
@@ -42,13 +41,12 @@ function createDispatchRequest(eventDataReceived, eventConfig) {
                 }
             }
         }
-
         requests.push({
             sourceEvent: eventConfig.eventName,
             eventData: eventDataReceived,
             dispatcher: tupple,
             datasource: eventConfig.dataSource[0]
-        })
+        });
     })
     return requests;
 }
