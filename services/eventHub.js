@@ -20,8 +20,6 @@ emitter.on('processMessage', function (eventData) {
                 }
             })
         });
-
-
     } else {
         console.log("Ignoring Invalid Event Data!!");
     }

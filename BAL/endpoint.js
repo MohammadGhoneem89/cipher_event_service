@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const rp = require('request-promise');
 const moment = require('moment');
+const format = require('xml-formatter');
 const Base64 = require('js-base64').Base64;
 let generalResponse = {
   "error": true,
@@ -12,11 +13,11 @@ module.exports = class Endpoint {
     this._requestBody = body;
   }
   executeEndpoint(endpoint, ServiceURI, ignoreBody) {
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> endpoint --------- ", JSON.stringify(endpoint, null, 2))
     let ServiceURL = "";
     let postfix = ServiceURI == '/' ? "" : ServiceURI;
     ServiceURL = `${endpoint.address}${postfix}`;
     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", ServiceURL);
-    
     switch (endpoint.authType) {
       case "bearer":
         // if (endpoint.auth.endpoint.auth.endpoint) {
@@ -75,6 +76,7 @@ module.exports = class Endpoint {
     let header = this.computeHeaders(endpoint);
     let data = this.computeFormBody(endpoint, body);
     return this.callWebService({
+      type: endpoint.requestType,
       serviceURL: url,
       ...data,
       headers: header
@@ -87,6 +89,7 @@ module.exports = class Endpoint {
     let data = this.computeFormBody(endpoint, body);
     _.set(header, 'Authorization', authorizationHeader);
     return this.callWebService({
+      type: endpoint.requestType,
       serviceURL: url,
       ...data,
       headers: header
@@ -107,6 +110,7 @@ module.exports = class Endpoint {
 
     // _.set(header, 'Authorization', authorizationHeader);
     return this.callWebService({
+      type: endpoint.requestType,
       serviceURL: url,
       ...data,
       headers: header
@@ -122,6 +126,7 @@ module.exports = class Endpoint {
     let data = this.computeFormBody(endpoint, body);
     _.set(header, 'Authorization', authorizationHeader);
     return this.callWebService({
+      type: endpoint.requestType,
       serviceURL: url,
       ...data,
       headers: header,
@@ -130,7 +135,7 @@ module.exports = class Endpoint {
   }
   computeHeaders(endpoint) {
     let header = {};
-    let requestDate = new Date();
+    let requestDate = new Date().getTime();
     if (endpoint.header) {
       endpoint.header.forEach((elem) => {
         switch (elem.headerType) {
@@ -143,7 +148,7 @@ module.exports = class Endpoint {
             _.set(header, elem.headerKey, `${datetime}`);
             break;
           case "DatetimeEpoch":
-            _.set(header, elem.headerKey, `${elem.headerPrefix}${requestDate}`);
+            _.set(header, elem.headerKey, requestDate);
             break;
           case "UUID":
             _.set(header, elem.headerKey, `${elem.headerPrefix}${this._UUID}`);
@@ -210,6 +215,7 @@ module.exports = class Endpoint {
       "error": true,
       "message": "Failed to get response"
     };
+    options.type
     let rpOptions = {
       method: 'POST',
       url: options.serviceURL,
@@ -218,39 +224,54 @@ module.exports = class Endpoint {
       timeout: 10000,
       json: !options.ignoreBody
     };
+
+    if (options.type == "soap") {
+      _.set(rpOptions, 'json', false);
+    }
+
+
     if (!options.ignoreBody) {
       _.set(rpOptions, 'body', options.body);
     } else {
       for (let key in options.form)
         _.set(rpOptions, 'body', `${key}:${options.form[key]}`);
     }
+    if (options.type == "soap") {
+      _.set(rpOptions, 'body', options.body.body);
+    }
     console.log("-------------BEGIN External Request--------------");
     console.log(JSON.stringify(rpOptions, null, 2));
     console.log("-------------END External Request--------------");
     return rp(rpOptions).then((data) => {
-      console.log("-------------BEGIN External Response--------------");
-      console.log(JSON.stringify(data, null, 2));
-      console.log("-------------END External Response--------------");
-      let parse = false;
-      if (!options.ignoreBody) {
-        parse = !options.ignoreBody;
-      }
-      if (data) {
-        if (data.success === false) {
-          throw new Error(data.message);
+
+      if (options.type == "soap") {
+        console.log("-------------BEGIN SOAP External Response--------------");
+        console.log(JSON.stringify(data, null, 2));
+        console.log("-------------END SOAP External Response--------------");
+        return format(data);
+      } else {
+        console.log("-------------BEGIN External Response--------------");
+        console.log(JSON.stringify(data, null, 2));
+        console.log("-------------END External Response--------------");
+        let parse = false;
+        if (!options.ignoreBody) {
+          parse = !options.ignoreBody;
         }
-        generalResponse.error = false;
-        generalResponse.message = 'Processed Ok!';
-        generalResponse.data = data;
+        if (data) {
+          if (data.success === false) {
+            throw new Error(data.message);
+          }
+          if (options.ignoreBody) {
+            return JSON.parse(data);
+          }
+          return data;
+        }
         if (options.ignoreBody) {
           return JSON.parse(data);
         }
         return data;
+
       }
-      if (options.ignoreBody) {
-        return JSON.parse(data);
-      }
-      return data;
     })
   }
 

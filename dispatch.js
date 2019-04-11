@@ -52,7 +52,6 @@ function processDispatchQueue() {
 
                     break;
                 case "API Direct":
-                    console.log(element.dispatcher.templateName._id)
                     if (element.dispatcher.templateName && element.dispatcher.templateName._id)
                         result = transformTemplate(element.eventdata, element.dispatcher.templateName)
                     else
@@ -60,13 +59,13 @@ function processDispatchQueue() {
                     let returnVal = {
                         body: result
                     };
-                    console.log(`API body: ${JSON.stringify(returnVal, null, 2)}`);
+
                     BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", returnVal).then((data) => {
                         console.log(`request maked as waiting successfully for ${element.internalid}`)
                         BAL.sendGet.external(element.dispatcher, returnVal).then((data) => {
                             if (data.errorCode && data.errorCode != "200") {
                                 console.log(JSON.stringify(data));
-                                returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
                                 response = {
                                     request: returnVal,
                                     response: data,
@@ -74,7 +73,6 @@ function processDispatchQueue() {
                                 BAL.dispatcher.updateDispatchRequest(element.internalid, 3, "some error occoured, please check logs!", response || {});
                             } else {
                                 error = 'Successfully Dispatched!'
-                                returnVal.header && _.set(returnVal, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                                 response = {
                                     request: returnVal,
                                     response: data,
@@ -85,13 +83,8 @@ function processDispatchQueue() {
                             console.log(exp);
                             error = exp.message ? exp.message : exp;
                             let expRequest = {
-                                header: {
-                                    username: element.dispatcher.endpointName.auth.username,
-                                    password: element.dispatcher.endpointName.auth.password
-                                },
                                 body: result
                             };
-                            expRequest.header && _.set(expRequest, 'header.password', "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                             response = {
                                 request: expRequest,
                                 response: data,
@@ -103,14 +96,10 @@ function processDispatchQueue() {
                     break;
                 case "API In-Direct":
                     result = element.eventdata;
-                    console.log("========element=========>", element, "<=======element===========");
-                    // console.log(`API body: ${JSON.stringify(result, null, 2)}`);
                     BAL.dispatcher.updateDispatchRequest(element.internalid, 4, "", {}).then((data) => {
                         console.log(`request maked as waiting successfully for ${element.internalid}`)
                         BAL.sendGet.internal(element.dispatcher, result).then((data) => {
                             if (data && data.error === true) {
-                                console.log("========RESPONSE=========>", data, "<=======RESPONSE===========");
-                                // console.log(JSON.stringify(data));
                                 response = {
                                     request: data.request,
                                     response: data.response,
@@ -137,13 +126,11 @@ function processDispatchQueue() {
                     });
                     break;
                 case "API":
-
                     if (element.dispatcher.requestURL) {
                         let prebody = {}
                         if (element.dispatcher.requestBody !== "") {
                             prebody = JSON.parse(element.dispatcher.requestBody)
                         }
-
                         let body = {
                             ...prebody,
                             eventData: element.eventdata
@@ -172,10 +159,8 @@ function processDispatchQueue() {
                         error = 'URL not defined for type API!!'
                         BAL.dispatcher.updateDispatchRequest(element.internalid, 3, error, {});
                     }
-
                     break;
                 case "EMAIL":
-
                     let Body = {
                         header: config.Avanza_ISC,
                         action: "notificationInsert",
