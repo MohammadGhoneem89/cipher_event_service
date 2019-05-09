@@ -1,7 +1,7 @@
 {
   "applySecrets" : false,
   "keyVault": {
-    "env": "WASL_Dev",
+    "env": "WASL_Dev2",
     "header":{
       "username": "vaultKeeper",
       "password": "DSGkeeper@321"

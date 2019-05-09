@@ -154,7 +154,7 @@ module.exports = class Endpoint {
             _.set(header, elem.headerKey, `${elem.headerPrefix}${this._UUID}`);
             break;
           case "dynamicField":
-            let dynifield = _.get(this._requestBody, elem.headerPrefix, "")
+            let dynifield = _.get(this._requestBody, elem.headerPrefix, "");            
             _.set(header, elem.headerKey, `${dynifield}`);
             break;
           case "UUIDN":
