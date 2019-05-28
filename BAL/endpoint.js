@@ -215,7 +215,7 @@ module.exports = class Endpoint {
       "error": true,
       "message": "Failed to get response"
     };
-    options.type
+
     let rpOptions = {
       method: 'POST',
       url: options.serviceURL,
@@ -225,7 +225,7 @@ module.exports = class Endpoint {
       json: !options.ignoreBody
     };
 
-    if (options.type == "soap") {
+    if (options.type === "soap") {
       _.set(rpOptions, 'json', false);
     }
 
