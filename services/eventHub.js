@@ -57,6 +57,7 @@ function createDispatchRequest(eventDataReceived, eventConfig) {
 function eventApplyRule(data, rules) {
   let rulePass = 0;
   let ruleFail = 0;
+  let temp;
   rules.forEach(rule => {
     let value = rule.value === "true" ? true : rule.value === "false" ? false : rule.value;
 
@@ -97,11 +98,13 @@ function eventApplyRule(data, rules) {
           rulePass++;
         break;
       case "length>":
-        if (_.get(data, rule.field, 0).length > value)
+        temp = _.get(data, rule.field, []);
+        if (temp != null && temp.length > value)
           rulePass++;
         break;
       case "length<":
-        if (_.get(data, rule.field, 0).length < value)
+        temp = _.get(data, rule.field, []);
+        if (temp != null && temp.length < value)
           rulePass++;
         break;
       default:
