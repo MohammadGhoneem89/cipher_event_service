@@ -10,7 +10,7 @@ tryConnection();
 const serverStatus = async (callback) => {
 
 
-  if(global.error=="")
+  if(global.error==null || global.error=="")
   callback({ state: 'healthy' });
   else 
   callback({ state: 'Unhealthy',error:global.error });

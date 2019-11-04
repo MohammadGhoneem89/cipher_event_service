@@ -1,0 +1,15 @@
+FROM registry.access.redhat.com/ubi8/nodejs-10:1-51
+#FROM risingstack/alpine:3.7-v8.10.0-4.8.0
+MAINTAINER Avanza Innovations <bilal.mahroof@avanzainnovations.com>
+
+
+USER root
+WORKDIR /opt/app-root
+COPY package.json .
+COPY . .
+RUN bash -c "npm install"
+RUN find / -perm /6000 -type f -exec chmod a-s {} \; || true
+HEALTHCHECK CMD node /opt/app-root/health.js localhost 9950 5000 /health
+USER 1001
+EXPOSE 9051
+CMD node app
