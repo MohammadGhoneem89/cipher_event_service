@@ -1,7 +1,29 @@
 'use strict';
 const dbConfig = require('./dbConfig');
 
+const express = require('express');
+let app = express();
+
 global.config = {};
+
+
+const serverStatus = async (callback) => {
+
+
+  if(global.error==null || global.error=="")
+  callback({ state: 'healthy' });
+  else 
+  callback({ state: 'Unhealthy',error:global.error });
+    
+      
+  };
+  
+  var appServer = app.listen(9950, function () {
+    
+    console.log('server running at http://%s:%s\n', appServer.address().address, appServer.address().port);
+  });
+  
+
 
 tryConnection();
 
