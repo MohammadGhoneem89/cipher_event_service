@@ -18,6 +18,10 @@ const serverStatus = async (callback) => {
       
   };
   
+  app.use('/health', require('express-healthcheck')({
+		test: serverStatus
+	  }));
+
   var appServer = app.listen(9950, function () {
     
     console.log('server running at http://%s:%s\n', appServer.address().address, appServer.address().port);
