@@ -7,12 +7,12 @@ const secret = require('./secret')
 function get(callback) {
   const options = {
     method: 'POST',
-    url: config.applySecrets ? secret.get("VAULT-URL") : config.keyVault.url,
+    url: config.applySecrets ? secret.get("VAULT-URL" + "-" + config.appName) : config.keyVault.url,
     body: {
       env: config.keyVault.env,
       header: config.applySecrets ? {
-        "username": secret.get("VAULT-USERNAME"),
-        "password": secret.get("VAULT-PASSWORD")
+        "username": secret.get("VAULT-USERNAME" + "-" + config.appName),
+        "password": secret.get("VAULT-PASSWORD" + "-" + config.appName)
       }
         : config.keyVault.header
     },
