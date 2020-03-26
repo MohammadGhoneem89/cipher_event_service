@@ -6,6 +6,10 @@ global.config = {};
 
 tryConnection();
 
+
+ 
+
+
 function tryConnection() {
   getConfigs()
     .then((config) => {

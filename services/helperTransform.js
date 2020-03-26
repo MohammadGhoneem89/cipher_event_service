@@ -1,5 +1,6 @@
 const Handlebars = require('handlebars');
 const moment = require('moment');
+const crypto = require('crypto')
 /**
  * Allows to bind payload data to templates
  * @param {String} id : _id of the API template mongo record
@@ -54,6 +55,12 @@ function transformTemplate(payload, source) {
             Handlebars.registerHelper(item.name, item.function);
         })
     }
+
+    Handlebars.registerHelper("hashItems", function(otp) {
+        return crypto.createHash('md5').update(otp).digest("hex")
+      
+      });
+      
     try {
         source = source.data;
         let template = Handlebars.compile(JSON.stringify(source));
