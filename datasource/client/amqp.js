@@ -23,7 +23,7 @@ module.exports =  function (connectionURL,rxQueueName,isDurable) {
                     setup: function(channel) {
                         // `channel` here is a regular amqplib `ConfirmChannel`.
                         // Note that `this` here is the channelWrapper instance.
-                        return channel.assertQueue(rxQueueName, {durable: isDurable});
+                        // return channel.assertQueue(rxQueueName, {durable: isDurable});
                     }
                 });
                 console.log("channel wrapper "+channelWrapper)
