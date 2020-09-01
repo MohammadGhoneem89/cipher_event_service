@@ -4,6 +4,7 @@ const rp = require('request-promise');
 const moment = require('moment');
 const format = require('xml-formatter');
 const Base64 = require('js-base64').Base64;
+const config = global.config;
 let generalResponse = {
   "error": true,
   "message": "Failed to get response"
@@ -221,7 +222,7 @@ module.exports = class Endpoint {
       url: options.serviceURL,
       form: Object.keys(options.form).length > 0 ? options.form : undefined,
       headers: options.headers,
-      timeout: 10000,
+      timeout: _.get(config,"timeout",10000),
       json: !options.ignoreBody
     };
 
