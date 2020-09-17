@@ -12,8 +12,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "amqp-connection-manager": "^2.3.2",
-    "amqplib": "^0.5.3",
+    "amqp-connection-manager": "^3.2.1",
+    "amqplib": "^0.6.0",
     "amqplib-auto-recovery": "^0.2.0",
     "bunyan": "^1.8.12",
     "bunyan-rotating-file-stream": "^1.6.3",
