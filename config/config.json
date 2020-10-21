@@ -1,12 +1,12 @@
 {
   "applySecrets" : false,
   "keyVault": {
-    "env": "WASL_Dev2",
+    "env": "STRESSTEST_DEV",
     "header":{
       "username": "vaultKeeper",
       "password": "DSGkeeper@321"
     },
-    "url": "http://104.211.155.19:9019/keyVault"
+    "url": "http://20.46.152.144:9009/keyVault"
   }
 }
 

@@ -21,7 +21,8 @@ COPY package.json .
 COPY . .
 # RUN bash -c "npm install"
 #RUN npm install
-RUN bash -c "npm install yarn -g"
-RUN bash -c "yarn install --ignore-engines"
+RUN npm install yarn -g
+RUN  yarn install --ignore-engines
 HEALTHCHECK CMD node /opt/app-root/healthcheck.js localhost 9950 5000 /health --interval=5s --timeout=30s --retries=5
 USER 1001
+CMD [ "node", "app.js"]
